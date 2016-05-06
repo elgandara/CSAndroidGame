@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CSAndroidGame</string>
+    <string name="game_title">Word Volley</string>
 </resources>
