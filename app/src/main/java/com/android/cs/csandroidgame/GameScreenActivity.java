@@ -13,11 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.io.IOException;
 import java.io.InputStream;
-
-
 
 public class GameScreenActivity extends AppCompatActivity implements OnClickListener{
 
@@ -30,6 +27,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     private int compScore;
 
     private boolean isUserTurn;
+
     private boolean isGameRunning;
     private boolean isGameOver;
     private TextView fragment;
@@ -47,14 +45,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         userScore=0;
         compScore=0;
         computerOn=true;
-
-        Bundle b = new Bundle();
-        b = getIntent().getExtras();
-        String name = b.getString("mode");
-        if(name.equals("multi"))
-        {
-            computerOn=false;
-        }
 
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
@@ -111,20 +101,32 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 dictionary.reset();
 
                 // Reset the labels of the views
+                TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                overallTime.setText("0");
+
+                TextView turnTime = (TextView) findViewById(R.id.turn_time);
+                turnTime.setText("0");
+
                 TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                turnLabel.setText("Turn Time: ");
+                turnLabel.setText("P1 Turn: ");
 
                 TextView fragment = (TextView) findViewById(R.id.fragment);
                 fragment.setText("-");
 
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
 
                 LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
 
                 LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
 
+                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
+                scoreOneText.setText("" + userScore);
 
+                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
+                scoreTwoText.setText("" + userScore);
             }
         }
         else if (id == R.id.start_button) {
@@ -200,7 +202,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
     }
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(1000000, 100) {
+        overallTimer = new CountDownTimer(10000, 100) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
@@ -209,11 +211,27 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
                 isGameOver = true;
+
+                LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
+
+                LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+
+                LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+
+                isGameOver = false;
+                isUserTurn = false;
+                isGameRunning = false;
+
+                turnTimer.cancel();
+
             }
         }.start();
     }
     public void startTurnTimer() {
-        turnTimer = new CountDownTimer(10000, 100) {
+        turnTimer = new CountDownTimer(5000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
@@ -245,8 +263,20 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                     input_text.setText("");
                 }
                 if (!isGameOver) {
+
+                    TextView turnTime = (TextView) findViewById(R.id.turn_time);
+
+                    TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+                    if (isUserTurn) {
+                        isUserTurn = false;
+                        turnLabel.setText("P2 Time: ");
+                    } else {
+                        isUserTurn = true;
+                        turnLabel.setText("P1 Time: ");
+                    }
                     startTurnTimer();
                 }
+
             }
         }.start();
     }

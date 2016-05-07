@@ -178,6 +178,7 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
+            android:id="@+id/score_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score_one"
@@ -203,6 +204,7 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
+            android:id="@+id/score_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/score_two"
