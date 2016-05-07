@@ -2,6 +2,7 @@ package com.android.cs.csandroidgame;
 
 import android.content.res.AssetManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,11 +10,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+
 
 public class GameScreenActivity extends AppCompatActivity implements OnClickListener{
 
@@ -28,7 +32,8 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
     private boolean isGameRunning;
     private boolean isGameOver;
-
+    private TextView fragment;
+    private  EditText input_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +43,8 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         isGameOver = false;
         isUserTurn = false;
         isGameRunning = false;
+        userScore=0;
+        compScore=0;
 
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
@@ -51,6 +58,11 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
         Button  submit_button = (Button) findViewById(R.id.submit_button);
         submit_button.setOnClickListener(this);
+
+        fragment = (TextView) findViewById(R.id.fragment);
+
+       input_text =(EditText) findViewById(R.id.edit_text);
+
 
         AssetManager asset = getAssets();
         try{
@@ -104,9 +116,54 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
                 startOverallTimer();
                 startTurnTimer();
+
+                //change to random letter
+                fragment.setText(dictionary.randomStart());
             }
         }
         else if (id == R.id.submit_button) {
+            //get the word from input
+
+            String input = input_text.getText().toString();
+            input_text.setText("");
+            TextView lastWord= (TextView) findViewById(R.id.word);
+            int color=Color.BLACK;
+            //check if the word was alreadyused or if it is not a word display red
+            if(dictionary.isWordTaken(input) || !dictionary.isWord(input))
+            {
+                color = Color.RED;
+            }
+
+
+            String prefix = fragment.getText().toString();
+            //if input is a word then display green
+            //add to score
+            //change player label
+            if(dictionary.isWord(input)&& input.startsWith(prefix))
+            {
+                color = Color.GREEN;
+                if(isUserTurn)
+                {
+                    userScore++;
+                }
+                else
+                {
+                    compScore++;
+                }
+
+            }
+            lastWord.setText(input);
+            lastWord.setTextColor(Color.RED);
+
+
+
+            //change player
+            turnTimer.cancel();
+            startTurnTimer();
+
+
+
+
 
         }
     }
@@ -140,10 +197,15 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 if (isUserTurn) {
                     isUserTurn = false;
                     turnLabel.setText("P2 Time: ");
+                    input_text.setFocusable(false);
+                    input_text.setClickable(false);
+
                 }
                 else {
                     isUserTurn = true;
                     turnLabel.setText("P1 Time: ");
+                    input_text.setFocusable(true);
+                    input_text.setClickable(true);
                 }
                 if (!isGameOver) {
                     startTurnTimer();
