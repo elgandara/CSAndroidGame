@@ -69,9 +69,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         submit_button.setOnClickListener(this);
 
         fragment = (TextView) findViewById(R.id.fragment);
-
         turnLabel = (TextView) findViewById(R.id.turn_label);
-
         input_text =(EditText) findViewById(R.id.edit_text);
 
 
@@ -95,7 +93,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             startActivity(intent);
         }
         else if (id == R.id.reset_button) {
-            if (isUserTurn || !isGameRunning) {
+            if (isUserTurn || (!isGameRunning && computerOn)) {
                 // Stop the timers
                 overallTimer.cancel();
                 turnTimer.cancel();
@@ -154,7 +152,9 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             }
         }
         else if (id == R.id.submit_button) {
-            action();
+            if (isGameRunning) {
+                action();
+            }
         }
     }
 
@@ -201,17 +201,12 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         lastWord.setText(input);
         lastWord.setTextColor(color);
 
-
-
         //change player
         turnTimer.cancel();
         startTurnTimer();
-
-
-
     }
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(20000, 100) {
+        overallTimer = new CountDownTimer(20000, 500) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
@@ -245,7 +240,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         }.start();
     }
     public void startTurnTimer() {
-        turnTimer = new CountDownTimer(1000, 100) {
+        turnTimer = new CountDownTimer(10000, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
