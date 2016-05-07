@@ -93,7 +93,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             startActivity(intent);
         }
         else if (id == R.id.reset_button) {
-            if (isUserTurn || !isGameRunning) {
+            if (isUserTurn || (!isGameRunning && computerOn)) {
                 // Stop the timers
                 overallTimer.cancel();
                 turnTimer.cancel();
