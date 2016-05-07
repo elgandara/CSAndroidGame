@@ -163,7 +163,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         //not his turn and playing with computer
         if(!isUserTurn && computerOn)
         {
-            input =dictionary.getPossibleWord(prefix);
+            input = dictionary.getPossibleWord(prefix);
         }
 
         //if input is a word then and starts with prefix display green
