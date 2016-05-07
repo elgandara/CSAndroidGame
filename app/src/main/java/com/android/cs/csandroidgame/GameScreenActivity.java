@@ -43,6 +43,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         isGameOver = false;
         isUserTurn = false;
         isGameRunning = false;
+
         userScore=0;
         compScore=0;
         computerOn=true;
@@ -93,52 +94,51 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             startActivity(intent);
         }
         else if (id == R.id.reset_button) {
-            if (isUserTurn || (!isGameRunning && computerOn)) {
-                // Stop the timers
-                overallTimer.cancel();
-                turnTimer.cancel();
+            // Stop the timers
+            overallTimer.cancel();
 
-                //reset variables
-                isGameOver = false;
-                isUserTurn = false;
-                isGameRunning = false;
-                userScore=0;
-                compScore=0;
+            turnTimer.cancel();
 
-                // Reset the dictionary
-                dictionary.reset();
+            //reset variables
+            isGameOver = false;
+            isUserTurn = false;
+            isGameRunning = false;
 
-                // Reset the labels of the views
-                TextView overallTime = (TextView) findViewById(R.id.overall_time);
-                TextView turnTime = (TextView) findViewById(R.id.turn_time);
-                TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                TextView fragment = (TextView) findViewById(R.id.fragment);
-                TextView previousWord = (TextView) findViewById(R.id.prev_word);
+            userScore = 0;
+            compScore = 0;
 
-                overallTime.setText("0");
-                turnTime.setText("0");
-                turnLabel.setText("P1 Turn: ");
-                fragment.setText("-");
-                previousWord.setText("-");
-                previousWord.setTextColor(Color.parseColor("#000000") );
+            // Reset the dictionary
+            dictionary.reset();
 
-                // Reset the scores in the text views
-                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
-                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
+            // Reset the labels of the views
+            TextView overallTime = (TextView) findViewById(R.id.overall_time);
+            TextView turnTime = (TextView) findViewById(R.id.turn_time);
+            TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+            TextView fragment = (TextView) findViewById(R.id.fragment);
+            TextView previousWord = (TextView) findViewById(R.id.prev_word);
 
-                scoreOneText.setText("" + userScore);
-                scoreTwoText.setText("" + compScore);
+            overallTime.setText("0");
+            turnTime.setText("0");
+            turnLabel.setText("P1 Turn: ");
+            fragment.setText("-");
+            previousWord.setText("-");
+            previousWord.setTextColor(Color.parseColor("#000000"));
 
-                LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-                LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
-                LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+            // Reset the scores in the text views
+            TextView scoreOneText = (TextView) findViewById(R.id.score_one);
+            TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
 
-                scoreTwoLayout.setVisibility(View.GONE);
-                scoreOneLayout.setVisibility(View.GONE);
-                fragmentLayout.setVisibility(View.VISIBLE);
-            }
-        }
-        else if (id == R.id.start_button) {
+            scoreOneText.setText("" + userScore);
+            scoreTwoText.setText("" + compScore);
+
+            LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+            LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+            LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+
+            scoreTwoLayout.setVisibility(View.GONE);
+            scoreOneLayout.setVisibility(View.GONE);
+            fragmentLayout.setVisibility(View.VISIBLE);
+        } else if (id == R.id.start_button) {
             // If the game is not running,
             if (!isGameRunning) {
                 isGameRunning = true;
@@ -150,8 +150,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 //change to random letter
                 fragment.setText(dictionary.randomStart());
             }
-        }
-        else if (id == R.id.submit_button) {
+        } else if (id == R.id.submit_button) {
             if (isGameRunning) {
                 action();
             }
@@ -172,6 +171,11 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
         //dont let the user submit word when
         //not his turn and playing with computer
+        Log.d("booleans", "___________________________");
+        Log.d("booleans", "isUserTurn: " + isUserTurn);
+        Log.d("booleans", "computerOn: " + computerOn);
+        Log.d("booleans", "isGameRunning: " + isGameRunning);
+        Log.d("booleans", "isGameOver: " + isGameOver);
         if(!isUserTurn && computerOn)
         {
             input = dictionary.getPossibleWord(prefix);
@@ -206,7 +210,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         startTurnTimer();
     }
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(20000, 500) {
+        overallTimer = new CountDownTimer(21000, 500) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
@@ -218,6 +222,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
                 isGameOver = true;
+                isGameRunning = false;
 
                 // Update the visibility of the fragment and score layouts
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
@@ -234,8 +239,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
                 scoreOneText.setText("" + userScore);
                 scoreTwoText.setText("" + compScore);
-
-                isGameRunning = false;
             }
         }.start();
     }
