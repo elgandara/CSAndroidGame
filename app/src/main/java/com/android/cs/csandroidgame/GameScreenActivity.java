@@ -89,8 +89,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             public void onFinish() {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
-
-
             }
         }.start();
     }
