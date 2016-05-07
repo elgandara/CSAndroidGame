@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,G
             // an issue with sign-in, please try again later."
             if (!BaseGameUtils.resolveConnectionFailure(this,
                     mGoogleApiClient, connectionResult,
-                    RC_SIGN_IN, R.string.signin_other_error)) {
+                    RC_SIGN_IN, this.getString(R.string.signin_other_error))) {
                 mResolvingConnectionFailure = false;
             }
         }
