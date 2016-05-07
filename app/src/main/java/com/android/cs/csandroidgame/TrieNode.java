@@ -18,43 +18,7 @@ public class TrieNode {
 
     public void add(String s) {
 
-        TrieNode current = new TrieNode();
-        current = this;
-        for(;;)
-        {
-            if(current.children.containsKey(s.charAt(0)+""))
-            {
-                if(s.length()==1)
-                {
-                   // Log.d("ADD Word", s);
-                    TrieNode temp = current.children.get(s);
-                    temp.isWord=true;
-                    current.children.put(s,temp);
-                    break;
-                }
-                else
-                {
-                    //Log.d("ADD: found Child", s);
-                    current=current.children.get(s.charAt(0)+"");
-                    s=s.substring(1);
-                }
-
-            }
-            else{
-                TrieNode other= new TrieNode();
-                if(s.length()==1)
-                {
-                  //  Log.d("ADD: new TrieWord", s);
-                    other.isWord=true;
-                    current.children.put(s.charAt(0)+"",other);
-                    break;
-                }
-                ///Log.d("ADD: new TrieNode", s);
-                current.children.put(s.charAt(0)+"",other);
-                current=current.children.get(s.charAt(0)+"");
-                s=s.substring(1);
-            }
-        }
+        multitask(s,true);
 
         //   add(s, this);
     }
@@ -182,6 +146,64 @@ public class TrieNode {
         return nextWord;
 
     }
+    public boolean remove(String other)
+    {
+
+
+        if(isWord(other))
+        {
+            multitask(other,false);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    public boolean multitask(String other, boolean t)
+    {
+        TrieNode current = new TrieNode();
+        current = this;
+        for(;;)
+        {
+            if(current.children.containsKey(other.charAt(0)+""))
+            {
+                if(other.length()==1)
+                {
+                    //Log.d("ADD Word", other);
+                    TrieNode temp = current.children.get(other);
+                    temp.isWord=t;
+                    current.children.put(other,temp);
+                    break;
+                }
+                else
+                {
+                   // Log.d("ADD: found Child", other);
+                    current=current.children.get(other.charAt(0)+"");
+                    other=other.substring(1);
+                }
+
+            }
+            else{
+                TrieNode temp= new TrieNode();
+                if(other.length()==1)
+                {
+                     // Log.d("ADD: new TrieWord", other);
+                    temp.isWord=t;
+                    current.children.put(other.charAt(0)+"",temp);
+                    break;
+                }
+                //Log.d("ADD: new TrieNode", other);
+                current.children.put(other.charAt(0)+"",temp);
+                current=current.children.get(other.charAt(0)+"");
+                other=other.substring(1);
+            }
+        }
+
+        return true;
+    }
+
     public String getRandomWord(TrieNode last)
     {
 

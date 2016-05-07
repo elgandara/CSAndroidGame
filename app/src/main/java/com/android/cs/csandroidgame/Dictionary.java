@@ -1,5 +1,7 @@
 package com.android.cs.csandroidgame;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +12,6 @@ import java.util.ArrayList;
  * Created by uriel on 5/6/2016.
  *
  *
- * connect the taken with the DAFSA
- *
- *
  */
 
 
@@ -20,30 +19,37 @@ import java.util.ArrayList;
 public class Dictionary {
     public final static int MIN_LENGTH=1;
     private DAFSA taken;
-    private ArrayList<String> words;
+    private TrieNode root;
+    private ArrayList<String> wordsUsed;
 
     public Dictionary(InputStream wordStream) throws IOException{
         BufferedReader in = new BufferedReader(new InputStreamReader(wordStream));
-        words = new ArrayList<>();
+        wordsUsed = new ArrayList<>();
         taken = new DAFSA();
-
+        root = new TrieNode();
         String line = null;
         while((line = in.readLine())!=null)
         {
             String word = line.trim();
+           // Log.d("ADD TEXT",word);
             if(word.length()>=MIN_LENGTH)
-                words.add(line.trim());
+            {
+                root.add(word);
+            }
+
         }
     }
 
 
-    public boolean isWord(String word){return words.contains(word);}
+    public boolean isWord(String word) {
+        return root.isWord(word);}
 
 
     public String getPossibleWord(String start)
     {
-
-        return null;
+        String word = root.getAnyWordStartingWith(start);
+        removeWord(word);
+        return word;
     }
 
     public boolean isWordTaken(String word)
@@ -54,16 +60,24 @@ public class Dictionary {
     public boolean removeWord(String word)
     {
         taken.insert(word);
-        return words.remove(word);
+        wordsUsed.add(word);
+        return root.remove(word);
 
     }
-    public boolean addWord(String word)
+    public boolean add(String word)
     {
-        return words.add(word);
+        root.add(word);
+        return true;
     }
+
     public boolean reset()
     {
         taken= new DAFSA();
+        for(String temp: wordsUsed)
+        {
+            root.add(temp);
+        }
+
         return true;
 
     }
