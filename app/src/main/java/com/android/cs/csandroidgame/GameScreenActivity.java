@@ -54,8 +54,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         catch(IOException e)
         {
         }
-
-
     }
 
     @Override
