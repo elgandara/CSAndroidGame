@@ -171,7 +171,7 @@ public class TrieNode {
             {
                 if(other.length()==1)
                 {
-                    // Log.d("ADD Word", s);
+                    //Log.d("ADD Word", other);
                     TrieNode temp = current.children.get(other);
                     temp.isWord=t;
                     current.children.put(other,temp);
@@ -179,7 +179,7 @@ public class TrieNode {
                 }
                 else
                 {
-                    //Log.d("ADD: found Child", s);
+                   // Log.d("ADD: found Child", other);
                     current=current.children.get(other.charAt(0)+"");
                     other=other.substring(1);
                 }
@@ -189,12 +189,12 @@ public class TrieNode {
                 TrieNode temp= new TrieNode();
                 if(other.length()==1)
                 {
-                    //  Log.d("ADD: new TrieWord", s);
+                     // Log.d("ADD: new TrieWord", other);
                     temp.isWord=t;
                     current.children.put(other.charAt(0)+"",temp);
                     break;
                 }
-                ///Log.d("ADD: new TrieNode", s);
+                //Log.d("ADD: new TrieNode", other);
                 current.children.put(other.charAt(0)+"",temp);
                 current=current.children.get(other.charAt(0)+"");
                 other=other.substring(1);

@@ -1,5 +1,7 @@
 package com.android.cs.csandroidgame;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,14 +26,15 @@ public class Dictionary {
         BufferedReader in = new BufferedReader(new InputStreamReader(wordStream));
         wordsUsed = new ArrayList<>();
         taken = new DAFSA();
-
+        root = new TrieNode();
         String line = null;
         while((line = in.readLine())!=null)
         {
             String word = line.trim();
+           // Log.d("ADD TEXT",word);
             if(word.length()>=MIN_LENGTH)
             {
-                root.add(line.trim());
+                root.add(word);
             }
 
         }
@@ -44,7 +47,9 @@ public class Dictionary {
 
     public String getPossibleWord(String start)
     {
-        return root.getAnyWordStartingWith(start);
+        String word = root.getAnyWordStartingWith(start);
+        removeWord(word);
+        return word;
     }
 
     public boolean isWordTaken(String word)
@@ -58,6 +63,11 @@ public class Dictionary {
         wordsUsed.add(word);
         return root.remove(word);
 
+    }
+    public boolean add(String word)
+    {
+        root.add(word);
+        return true;
     }
 
     public boolean reset()
