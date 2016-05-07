@@ -81,6 +81,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         int id = v.getId();
 
         if (id == R.id.quit_button) {
+
             Intent intent = new Intent(GameScreenActivity.this, MainActivity.class);
             startActivity(intent);
         }
@@ -221,8 +222,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
                 scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
 
-                isGameOver = false;
-                isUserTurn = false;
                 isGameRunning = false;
 
                 turnTimer.cancel();
@@ -261,22 +260,9 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                     input_text.setFocusable(true);
                     input_text.setClickable(true);
                     input_text.setText("");
+
                 }
-                if (!isGameOver) {
-
-                    TextView turnTime = (TextView) findViewById(R.id.turn_time);
-
-                    TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                    if (isUserTurn) {
-                        isUserTurn = false;
-                        turnLabel.setText("P2 Time: ");
-                    } else {
-                        isUserTurn = true;
-                        turnLabel.setText("P1 Time: ");
-                    }
-                    startTurnTimer();
-                }
-
+                startTurnTimer();
             }
         }.start();
     }
