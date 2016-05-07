@@ -3,7 +3,7 @@
     <string name="turn_time">0</string>
     <string name="overall_time">0</string>
     <string name="prev_word">-</string>
-    <string name="time_label">Turn Time: </string>
+    <string name="time_label">P1 Turn: </string>
     <string name="word_title">Previous Word:</string>
     <string name="overall_time_label">Overall Time:</string>
     <string name="multiplayer_mode">Multiplayer\nMode</string>
