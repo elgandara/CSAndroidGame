@@ -67,6 +67,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         }
         else if (id == R.id.reset_button) {
 
+            dictionary.reset();
         }
         else if (id == R.id.start_button) {
             // If the game is not running,
