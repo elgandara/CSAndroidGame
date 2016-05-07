@@ -53,6 +53,20 @@ public class DAFSA {
             edges = new HashMap<Character, DNode>();
         }
 
+        public boolean equals(Object other)
+        {
+            if(this==other)
+            {
+                return true;
+            }
+            if(other ==null)
+            {
+                return false;
+            }
+            DNode temp = (DNode) other;
+            return (id==temp.getId() && last == temp.getFinal() && edges==temp.getEdges());
+        }
+
         public int getId(){return id;}
         public boolean getFinal(){return last;}
 
@@ -114,7 +128,64 @@ public class DAFSA {
     public void minimize(int prefix)
     {
 
+        for(int i = uncheckedNodes.size()-1; i>=prefix;i--)
+        {
+            Triple temp = uncheckedNodes.get(i);
+            java.util.Iterator<DNode> iter = minimizedNodes.iterator();
+            boolean foundMatch = false;
+            while(iter.hasNext())
+            {
+                DNode match = iter.next();
+                if(temp.next.equals(match))
+                {
+                    temp.node.addEdge(temp.letter,temp.next);
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if(!foundMatch)
+            {
+                minimizedNodes.add(temp.next);
+            }
+            uncheckedNodes.remove(i);
+        }
 
+    }
+
+    public boolean contains(String word)
+    {
+        DNode node = root;
+        Character letter;
+        for (int i=0; i<word.length(); i++){
+            letter = word.charAt(i);
+            if (node.containsEdge(letter) == false){
+                return false;
+            } else {
+                node = node.traverseEdge(letter);
+            }
+        }
+        if (node.getFinal() == true){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int edgeCount()
+    {
+        int count =0;
+        java.util.Iterator<DNode> iter = minimizedNodes.iterator();
+        DNode curr;
+        while (iter.hasNext()) {
+            curr = iter.next();
+            System.out.println(curr.toString());
+            count += curr.numEdges();
+        }
+        return count;
+    }
+    public void finish()
+    {
+        minimize(0);
     }
 
 
