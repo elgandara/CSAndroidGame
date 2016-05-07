@@ -17,6 +17,18 @@ import java.io.InputStream;
 public class GameScreenActivity extends AppCompatActivity implements OnClickListener{
 
     private Dictionary dictionary;
+    private CountDownTimer overallTimer;
+    private CountDownTimer turnTimer;
+
+    private int userScore;
+    private int compScore;
+
+    private boolean isUserTurn;
+    private boolean isComputerTurn;
+
+    private boolean isGameRunning;
+    private boolean isGameOver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,19 +72,26 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
         }
         else if (id == R.id.start_button) {
-            new CountDownTimer(10000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    TextView overallTime = (TextView) findViewById(R.id.overall_time);
-                    overallTime.setText( Long.toString(millisUntilFinished / 1000) );
-                }
-                public void onFinish() {
-                    TextView overallTime = (TextView) findViewById(R.id.overall_time);
-                    overallTime.setText("Game Over!");
-                }
-            }.start();
+            // If the game is not running,
+            if (!isGameRunning) {
+                startOverallTimer();
+            }
         }
         else if (id == R.id.submit_button) {
 
         }
+    }
+
+    public void startOverallTimer() {
+        overallTimer = new CountDownTimer(20000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                overallTime.setText( Long.toString(millisUntilFinished / 1000) );
+            }
+            public void onFinish() {
+                TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                overallTime.setText("Game Over!");
+            }
+        }.start();
     }
 }
