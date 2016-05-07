@@ -16,4 +16,7 @@
     <string name="score_one_label">Player One Score:</string>
     <string name="score_two_label">Player Two Score:</string>
     <string name="fragment_label">Starting Fragment:</string>
+    <string name="score_two">0</string>
+    <string name="score_one">0</string>
+    <string name="fragment">-</string>
 </resources>
