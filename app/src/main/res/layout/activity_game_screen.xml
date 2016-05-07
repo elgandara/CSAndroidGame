@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.android.cs.csandroidgame.GameScreen"
+    tools:context="com.android.cs.csandroidgame.GameScreenActivity"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:text="@string/overall_time_label"
             android:textColor="@color/black"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:text="@string/time_label"
             android:textColor="@color/black"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,8 +42,9 @@
             android:layout_weight="1"
             android:text="@string/overall_time"
             android:textColor="@color/black"
-            android:textSize="20dp"
-            android:paddingLeft="20dp" />
+            android:textSize="20sp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"/>
 
         <TextView
             android:id="@+id/turn_time"
@@ -52,8 +53,9 @@
             android:layout_weight="1"
             android:text="@string/turn_time"
             android:textColor="@color/black"
-            android:textSize="20dp"
-            android:paddingLeft="20dp" />
+            android:textSize="20sp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"/>
 
     </LinearLayout>
 
@@ -63,34 +65,69 @@
         android:layout_marginTop="@dimen/activity_vertical_margin" >
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:hint="Enter a word"/>
+            android:layout_weight="3"
+            android:hint="@string/input_hint"
+            android:layout_marginRight="15sp"/>
+
+        <Button
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/submit_button"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/word_title"
             android:textColor="@color/black"
             android:textSize="25dp" />
 
         <TextView
             android:id="@+id/word"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/prev_word"
             android:textColor="@color/black"
             android:textSize="20dp"
             android:paddingLeft="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin">
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/start_button_text" />
+
+        <Button
+            android:id="@+id/reset_button"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/reset_button"/>
+
+        <Button
+            android:id="@+id/quit_button"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/quit_button"/>
 
     </LinearLayout>
 
