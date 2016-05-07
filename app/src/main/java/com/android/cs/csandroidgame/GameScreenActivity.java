@@ -39,6 +39,9 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         isUserTurn = false;
         isGameRunning = false;
 
+        userScore = 0;
+        compScore = 0;
+
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
         quit_button.setOnClickListener(this);
@@ -79,21 +82,38 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 // Reset the dictionary
                 dictionary.reset();
 
+                // Reset the game states
+                isGameRunning = false;
+                isGameOver = false;
+                isUserTurn = false;
+
                 // Reset the labels of the views
+                TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                overallTime.setText("0");
+
+                TextView turnTime = (TextView) findViewById(R.id.turn_time);
+                turnTime.setText("0");
+
                 TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                turnLabel.setText("Turn Time: ");
+                turnLabel.setText("P1 Turn: ");
 
                 TextView fragment = (TextView) findViewById(R.id.fragment);
                 fragment.setText("-");
 
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
 
                 LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
 
                 LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
 
+                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
+                scoreOneText.setText("" + userScore);
 
+                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
+                scoreTwoText.setText("" + userScore);
             }
         }
         else if (id == R.id.start_button) {
@@ -121,6 +141,22 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
                 isGameOver = true;
+
+                LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
+
+                LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+
+                LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+
+                isGameOver = false;
+                isUserTurn = false;
+                isGameRunning = false;
+
+                turnTimer.cancel();
+
             }
         }.start();
     }
@@ -134,20 +170,21 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
             @Override
             public void onFinish() {
-                TextView turnTime = (TextView) findViewById(R.id.turn_time);
-
-                TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                if (isUserTurn) {
-                    isUserTurn = false;
-                    turnLabel.setText("P2 Time: ");
-                }
-                else {
-                    isUserTurn = true;
-                    turnLabel.setText("P1 Time: ");
-                }
                 if (!isGameOver) {
+
+                    TextView turnTime = (TextView) findViewById(R.id.turn_time);
+
+                    TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+                    if (isUserTurn) {
+                        isUserTurn = false;
+                        turnLabel.setText("P2 Time: ");
+                    } else {
+                        isUserTurn = true;
+                        turnLabel.setText("P1 Time: ");
+                    }
                     startTurnTimer();
                 }
+
             }
         }.start();
     }
