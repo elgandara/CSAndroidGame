@@ -132,13 +132,13 @@ public class TrieNode {
         {
             // Log.d("GETWORD: Random", "("+nextWord+")" +(nextWord.length()));
             //Log.d("GETWORD","POSSIBLE");
-            printKeySet(current);
+           // printKeySet(current);
 
             nextWord+=getRandomWord(current);
             //Log.d("GETWORD: Random", "(" + nextWord + ")" + isWord(nextWord) + nextWord.length() + "CHAR: " + nextWord.charAt(nextWord.length()-1));
             current = current.children.get(nextWord.charAt(nextWord.length()-1)+"");
             //Log.d("GETWORD","AFTER");
-            printKeySet(current);
+          //  printKeySet(current);
 
         }
 
@@ -208,13 +208,13 @@ public class TrieNode {
     {
 
         //Log.d("GETWORD: INRAND","POSSIBLE");
-        printKeySet(last);
+       // printKeySet(last);
         Random rand = new Random();
         List<String> keys = new ArrayList<String>(last.children.keySet());
         String rValue = keys.get(rand.nextInt(keys.size()));
 
         //Log.d("GETWORD: INRAND","AFTER");
-        printKeySet(last.children.get(rValue+""));
+        //printKeySet(last.children.get(rValue+""));
 
         //Log.d("GETWORD: INRAND","RETURN: "+rValue);
         return rValue;

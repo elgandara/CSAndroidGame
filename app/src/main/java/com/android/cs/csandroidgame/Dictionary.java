@@ -57,6 +57,7 @@ public class Dictionary {
         return taken.contains(word);
     }
 
+
     public boolean removeWord(String word)
     {
         taken.insert(word);
@@ -80,6 +81,14 @@ public class Dictionary {
 
         return true;
 
+    }
+    public String randomStart()
+    {
+
+        String start =root.getAnyWordStartingWith("");
+       // Log.d("START", start.substring(0,1));
+
+        return start.substring(0,1);
     }
 
 }
