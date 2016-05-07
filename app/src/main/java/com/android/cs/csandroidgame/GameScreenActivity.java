@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -24,7 +25,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     private int compScore;
 
     private boolean isUserTurn;
-    private boolean isComputerTurn;
 
     private boolean isGameRunning;
     private boolean isGameOver;
@@ -33,6 +33,11 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
+
+        // Initialize game states
+        isGameOver = false;
+        isUserTurn = false;
+        isGameRunning = false;
 
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
@@ -66,12 +71,39 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             startActivity(intent);
         }
         else if (id == R.id.reset_button) {
+            if (isUserTurn) {
+                // Stop the timers
+                overallTimer.cancel();
+                turnTimer.cancel();
 
+                // Reset the dictionary
+                dictionary.reset();
+
+                // Reset the labels of the views
+                TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+                turnLabel.setText("Turn Time: ");
+
+                TextView fragment = (TextView) findViewById(R.id.fragment);
+                fragment.setText("-");
+
+                LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
+                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
+
+                LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
+
+
+            }
         }
         else if (id == R.id.start_button) {
             // If the game is not running,
             if (!isGameRunning) {
+                isGameRunning = true;
+                isUserTurn = true;
+
                 startOverallTimer();
+                startTurnTimer();
             }
         }
         else if (id == R.id.submit_button) {
@@ -80,7 +112,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     }
 
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(20000, 1000) {
+        overallTimer = new CountDownTimer(10000, 100) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
@@ -88,6 +120,34 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             public void onFinish() {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
+                isGameOver = true;
+            }
+        }.start();
+    }
+    public void startTurnTimer() {
+        turnTimer = new CountDownTimer(5000, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                TextView turnTime = (TextView) findViewById(R.id.turn_time);
+                turnTime.setText( "" + (millisUntilFinished / 1000) );
+            }
+
+            @Override
+            public void onFinish() {
+                TextView turnTime = (TextView) findViewById(R.id.turn_time);
+
+                TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+                if (isUserTurn) {
+                    isUserTurn = false;
+                    turnLabel.setText("P2 Time: ");
+                }
+                else {
+                    isUserTurn = true;
+                    turnLabel.setText("P1 Time: ");
+                }
+                if (!isGameOver) {
+                    startTurnTimer();
+                }
             }
         }.start();
     }
