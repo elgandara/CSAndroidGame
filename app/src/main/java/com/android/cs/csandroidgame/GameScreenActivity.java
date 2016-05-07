@@ -2,11 +2,13 @@ package com.android.cs.csandroidgame;
 
 import android.content.res.AssetManager;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +58,16 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
         }
         else if (id == R.id.start_button) {
-
+            new CountDownTimer(10000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                    overallTime.setText( Long.toString(millisUntilFinished / 1000) );
+                }
+                public void onFinish() {
+                    TextView overallTime = (TextView) findViewById(R.id.overall_time);
+                    overallTime.setText("Game Over!");
+                }
+            }.start();
         }
         else if (id == R.id.submit_button) {
 

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             Bundle bundle = new Bundle();
             bundle.putString("mode", "multi");
 
-            Intent intent = new Intent();
+            Intent intent = new Intent(MainActivity.this, GameScreenActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
         }
