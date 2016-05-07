@@ -57,6 +57,7 @@ public class Dictionary {
         return taken.contains(word);
     }
 
+
     public boolean removeWord(String word)
     {
         taken.insert(word);

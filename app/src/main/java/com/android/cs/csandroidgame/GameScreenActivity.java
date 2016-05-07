@@ -25,15 +25,16 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     private CountDownTimer overallTimer;
     private CountDownTimer turnTimer;
 
+    private boolean computerOn;
     private int userScore;
     private int compScore;
 
     private boolean isUserTurn;
-
     private boolean isGameRunning;
     private boolean isGameOver;
     private TextView fragment;
     private  EditText input_text;
+    private  TextView turnLabel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +46,15 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         isGameRunning = false;
         userScore=0;
         compScore=0;
+        computerOn=true;
+
+        Bundle b = new Bundle();
+        b = getIntent().getExtras();
+        String name = b.getString("mode");
+        if(name.equals("multi"))
+        {
+            computerOn=false;
+        }
 
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
@@ -60,6 +70,8 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         submit_button.setOnClickListener(this);
 
         fragment = (TextView) findViewById(R.id.fragment);
+
+        turnLabel = (TextView) findViewById(R.id.turn_label);
 
        input_text =(EditText) findViewById(R.id.edit_text);
 
@@ -88,6 +100,13 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 overallTimer.cancel();
                 turnTimer.cancel();
 
+                //reset variables
+                isGameOver = false;
+                isUserTurn = false;
+                isGameRunning = false;
+                userScore=0;
+                compScore=0;
+
                 // Reset the dictionary
                 dictionary.reset();
 
@@ -113,6 +132,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             if (!isGameRunning) {
                 isGameRunning = true;
                 isUserTurn = true;
+                turnLabel.setText("P1 Time: ");
 
                 startOverallTimer();
                 startTurnTimer();
@@ -122,54 +142,65 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             }
         }
         else if (id == R.id.submit_button) {
-            //get the word from input
-
-            String input = input_text.getText().toString();
-            input_text.setText("");
-            TextView lastWord= (TextView) findViewById(R.id.word);
-            int color=Color.BLACK;
-            //check if the word was alreadyused or if it is not a word display red
-            if(dictionary.isWordTaken(input) || !dictionary.isWord(input))
-            {
-                color = Color.RED;
-            }
-
-
-            String prefix = fragment.getText().toString();
-            //if input is a word then display green
-            //add to score
-            //change player label
-            if(dictionary.isWord(input)&& input.startsWith(prefix))
-            {
-                color = Color.GREEN;
-                if(isUserTurn)
-                {
-                    userScore++;
-                }
-                else
-                {
-                    compScore++;
-                }
-
-            }
-            lastWord.setText(input);
-            lastWord.setTextColor(Color.RED);
-
-
-
-            //change player
-            turnTimer.cancel();
-            startTurnTimer();
-
-
-
-
+         action();
 
         }
     }
 
+    public void action()
+    {
+        //get the word from input
+        String input = input_text.getText().toString();
+        input_text.setText("");
+        TextView lastWord= (TextView) findViewById(R.id.word);
+        int color=Color.RED;
+        //assume the word is already used or not a word
+
+        String prefix = fragment.getText().toString();
+
+
+        //dont let the user submit word when
+        //not his turn and playing with computer
+        if(!isUserTurn && computerOn)
+        {
+            input =dictionary.getPossibleWord(prefix);
+        }
+
+        //if input is a word then and starts with prefix display green
+        //add to score
+        //change player labels
+        if(dictionary.isWord(input) && input.startsWith(prefix) && !dictionary.isWordTaken(input))
+        {
+            color = Color.GREEN;
+            dictionary.removeWord(input);
+            if(isUserTurn)
+            {
+                userScore++;
+                turnLabel.setText("P2 Time: ");
+                isUserTurn=false;
+            }
+            else
+            {
+                compScore++;
+                turnLabel.setText("P1 Time: ");
+                isUserTurn=true;
+            }
+
+        }
+        lastWord.setText(input);
+        lastWord.setTextColor(color);
+
+
+
+        //change player
+        turnTimer.cancel();
+        startTurnTimer();
+
+
+
+    }
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(10000, 100) {
+        overallTimer = new CountDownTimer(1000000, 100) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
@@ -182,7 +213,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         }.start();
     }
     public void startTurnTimer() {
-        turnTimer = new CountDownTimer(5000, 100) {
+        turnTimer = new CountDownTimer(10000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
@@ -193,12 +224,17 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             public void onFinish() {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
 
-                TextView turnLabel = (TextView) findViewById(R.id.turn_label);
+
                 if (isUserTurn) {
+                    if(computerOn)
+                    {
+                        action();
+                    }
                     isUserTurn = false;
                     turnLabel.setText("P2 Time: ");
                     input_text.setFocusable(false);
                     input_text.setClickable(false);
+                    input_text.setText("");
 
                 }
                 else {
@@ -206,6 +242,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                     turnLabel.setText("P1 Time: ");
                     input_text.setFocusable(true);
                     input_text.setClickable(true);
+                    input_text.setText("");
                 }
                 if (!isGameOver) {
                     startTurnTimer();
