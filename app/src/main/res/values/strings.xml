@@ -13,4 +13,7 @@
     <string name="reset_button">Reset</string>
     <string name="quit_button">Quit</string>
     <string name="submit_button">Submit</string>
+    <string name="score_one_label">Player One Score:</string>
+    <string name="score_two_label">Player Two Score:</string>
+    <string name="fragment_label">Starting Fragment:</string>
 </resources>
