@@ -25,7 +25,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     private int compScore;
 
     private boolean isUserTurn;
-
     private boolean isGameRunning;
     private boolean isGameOver;
 
