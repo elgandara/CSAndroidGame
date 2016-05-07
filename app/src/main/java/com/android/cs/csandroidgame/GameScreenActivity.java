@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,6 +18,20 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
+
+        // Turn on the action listeners for the buttons
+        Button  quit_button = (Button) findViewById(R.id.quit_button);
+        quit_button.setOnClickListener(this);
+
+        Button  reset_button = (Button) findViewById(R.id.reset_button);
+        reset_button.setOnClickListener(this);
+
+        Button  start_button = (Button) findViewById(R.id.start_button);
+        start_button.setOnClickListener(this);
+
+        Button  submit_button = (Button) findViewById(R.id.submit_button);
+        submit_button.setOnClickListener(this);
+
         AssetManager asset = getAssets();
         try{
             InputStream inputStream = asset.open("words.txt");
