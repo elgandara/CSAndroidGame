@@ -82,6 +82,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         catch(IOException e)
         {
         }
+
     }
 
     @Override
@@ -138,6 +139,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             scoreTwoLayout.setVisibility(View.GONE);
             scoreOneLayout.setVisibility(View.GONE);
             fragmentLayout.setVisibility(View.VISIBLE);
+
         } else if (id == R.id.start_button) {
             // If the game is not running,
             if (!isGameRunning) {
@@ -146,18 +148,36 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
                 startOverallTimer();
                 startTurnTimer();
+                input_text.setFocusable(true);
+                input_text.setClickable(true);
+
 
                 //change to random letter
                 fragment.setText(dictionary.randomStart());
             }
         } else if (id == R.id.submit_button) {
             if (isGameRunning) {
-                action();
+                userTurn();
             }
         }
     }
+    public void computerTurn()
+    {
+        //get the word from input
+        String prefix = fragment.getText().toString();
+        String input = dictionary.getPossibleWord(prefix);
+        TextView lastWord= (TextView) findViewById(R.id.prev_word);
+        int color=Color.GREEN;
+        compScore++;
+        lastWord.setText(input);
+        lastWord.setTextColor(color);
 
-    public void action()
+        input_text.setFocusable(true);
+        input_text.setClickable(true);
+
+    }
+
+    public void userTurn()
     {
         //get the word from input
         String input = input_text.getText().toString();
@@ -176,38 +196,27 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         Log.d("booleans", "computerOn: " + computerOn);
         Log.d("booleans", "isGameRunning: " + isGameRunning);
         Log.d("booleans", "isGameOver: " + isGameOver);
-        if(!isUserTurn && computerOn)
-        {
-            input = dictionary.getPossibleWord(prefix);
-        }
-
+        Log.d("booleans", "Human word" + input);
         //if input is a word then and starts with prefix display green
         //add to score
         //change player labels
+
         if(dictionary.isWord(input) && input.startsWith(prefix) && !dictionary.isWordTaken(input))
         {
             color = Color.GREEN;
             dictionary.removeWord(input);
-            if(isUserTurn)
-            {
-                userScore++;
-                turnLabel.setText("P2 Time: ");
-                isUserTurn=false;
-            }
-            else
-            {
-                compScore++;
-                turnLabel.setText("P1 Time: ");
-                isUserTurn=true;
-            }
-
+               userScore++;
         }
         lastWord.setText(input);
+        Log.d("booleans", "word color" + color);
         lastWord.setTextColor(color);
 
         //change player
-        turnTimer.cancel();
+        turnTimer.onFinish();
         startTurnTimer();
+        input_text.setFocusable(false);
+        input_text.setClickable(false);
+
     }
     public void startOverallTimer() {
         overallTimer = new CountDownTimer(21000, 500) {
@@ -216,13 +225,16 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
             }
             public void onFinish() {
-                // Turn off the turn timer
-                turnTimer.cancel();
+
 
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
                 isGameOver = true;
                 isGameRunning = false;
+
+                // Turn off the turn timer
+                turnTimer.onFinish();
+
 
                 // Update the visibility of the fragment and score layouts
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
@@ -252,30 +264,25 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
             @Override
             public void onFinish() {
+                cancel();
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
 
                 if (isUserTurn) {
-                    if(computerOn)
-                    {
-                        action();
-                    }
                     isUserTurn = false;
                     turnLabel.setText("P2 Time: ");
-                    input_text.setFocusable(false);
-                    input_text.setClickable(false);
+                    computerTurn();
                     input_text.setText("");
 
                 }
                 else {
                     isUserTurn = true;
                     turnLabel.setText("P1 Time: ");
-                    input_text.setFocusable(true);
-                    input_text.setClickable(true);
                     input_text.setText("");
 
                 }
 
                 if (!isGameOver) {
+
                     startTurnTimer();
                 }
             }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 
 public class Dictionary {
-    public final static int MIN_LENGTH=1;
+    public final static int MIN_LENGTH=2;
     private DAFSA taken;
     private TrieNode root;
     private ArrayList<String> wordsUsed;
@@ -48,7 +48,6 @@ public class Dictionary {
     public String getPossibleWord(String start)
     {
         String word = root.getAnyWordStartingWith(start);
-        removeWord(word);
         return word;
     }
 
