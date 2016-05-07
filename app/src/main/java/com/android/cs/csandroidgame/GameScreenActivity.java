@@ -27,12 +27,13 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
     private int compScore;
 
     private boolean isUserTurn;
-
     private boolean isGameRunning;
     private boolean isGameOver;
+
     private TextView fragment;
     private  EditText input_text;
     private  TextView turnLabel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +46,14 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         userScore=0;
         compScore=0;
         computerOn=true;
+
+        Bundle b = new Bundle();
+        b = getIntent().getExtras();
+        String name = b.getString("mode");
+        if (name.equals("multi") )
+        {
+            computerOn = false;
+        }
 
         // Turn on the action listeners for the buttons
         Button  quit_button = (Button) findViewById(R.id.quit_button);
@@ -63,13 +72,13 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
         turnLabel = (TextView) findViewById(R.id.turn_label);
 
-       input_text =(EditText) findViewById(R.id.edit_text);
+        input_text =(EditText) findViewById(R.id.edit_text);
 
 
         AssetManager asset = getAssets();
         try{
             InputStream inputStream = asset.open("words.txt");
-             dictionary = new Dictionary(inputStream);
+            dictionary = new Dictionary(inputStream);
         }
         catch(IOException e)
         {
@@ -86,7 +95,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             startActivity(intent);
         }
         else if (id == R.id.reset_button) {
-            if (isUserTurn) {
+            if (isUserTurn || !isGameRunning) {
                 // Stop the timers
                 overallTimer.cancel();
                 turnTimer.cancel();
@@ -103,31 +112,32 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
                 // Reset the labels of the views
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
-                overallTime.setText("0");
-
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
-                turnTime.setText("0");
-
                 TextView turnLabel = (TextView) findViewById(R.id.turn_label);
-                turnLabel.setText("P1 Turn: ");
-
                 TextView fragment = (TextView) findViewById(R.id.fragment);
+                TextView previousWord = (TextView) findViewById(R.id.prev_word);
+
+                overallTime.setText("0");
+                turnTime.setText("0");
+                turnLabel.setText("P1 Turn: ");
                 fragment.setText("-");
+                previousWord.setText("-");
+                previousWord.setTextColor(Color.parseColor("#000000") );
+
+                // Reset the scores in the text views
+                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
+                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
+
+                scoreOneText.setText("" + userScore);
+                scoreTwoText.setText("" + compScore);
 
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
-
                 LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
-                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
-
                 LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
-                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
 
-                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
-                scoreOneText.setText("" + userScore);
-
-                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
-                scoreTwoText.setText("" + userScore);
+                scoreTwoLayout.setVisibility(View.GONE);
+                scoreOneLayout.setVisibility(View.GONE);
+                fragmentLayout.setVisibility(View.VISIBLE);
             }
         }
         else if (id == R.id.start_button) {
@@ -135,7 +145,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             if (!isGameRunning) {
                 isGameRunning = true;
                 isUserTurn = true;
-                turnLabel.setText("P1 Time: ");
 
                 startOverallTimer();
                 startTurnTimer();
@@ -145,8 +154,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             }
         }
         else if (id == R.id.submit_button) {
-         action();
-
+            action();
         }
     }
 
@@ -155,7 +163,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         //get the word from input
         String input = input_text.getText().toString();
         input_text.setText("");
-        TextView lastWord= (TextView) findViewById(R.id.word);
+        TextView lastWord= (TextView) findViewById(R.id.prev_word);
         int color=Color.RED;
         //assume the word is already used or not a word
 
@@ -203,34 +211,41 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
     }
     public void startOverallTimer() {
-        overallTimer = new CountDownTimer(10000, 100) {
+        overallTimer = new CountDownTimer(20000, 100) {
             public void onTick(long millisUntilFinished) {
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText( Long.toString(millisUntilFinished / 1000) );
             }
             public void onFinish() {
+                // Turn off the turn timer
+                turnTimer.cancel();
+
                 TextView overallTime = (TextView) findViewById(R.id.overall_time);
                 overallTime.setText("Game Over!");
                 isGameOver = true;
 
+                // Update the visibility of the fragment and score layouts
                 LinearLayout fragmentLayout = (LinearLayout) findViewById(R.id.fragment_layout);
-                fragmentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0) );
-
                 LinearLayout scoreOneLayout = (LinearLayout) findViewById(R.id.score_one_layout);
-                scoreOneLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
-
                 LinearLayout scoreTwoLayout = (LinearLayout) findViewById(R.id.score_two_layout);
-                scoreTwoLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT) );
+
+                fragmentLayout.setVisibility(View.GONE);
+                scoreOneLayout.setVisibility(View.VISIBLE);
+                scoreTwoLayout.setVisibility(View.VISIBLE);
+
+                // Update the score of the players
+                TextView scoreOneText = (TextView) findViewById(R.id.score_one);
+                TextView scoreTwoText = (TextView) findViewById(R.id.score_two);
+
+                scoreOneText.setText("" + userScore);
+                scoreTwoText.setText("" + compScore);
 
                 isGameRunning = false;
-
-                turnTimer.cancel();
-
             }
         }.start();
     }
     public void startTurnTimer() {
-        turnTimer = new CountDownTimer(5000, 100) {
+        turnTimer = new CountDownTimer(1000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
@@ -240,7 +255,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
             @Override
             public void onFinish() {
                 TextView turnTime = (TextView) findViewById(R.id.turn_time);
-
 
                 if (isUserTurn) {
                     if(computerOn)
@@ -262,7 +276,10 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                     input_text.setText("");
 
                 }
-                startTurnTimer();
+
+                if (!isGameOver) {
+                    startTurnTimer();
+                }
             }
         }.start();
     }

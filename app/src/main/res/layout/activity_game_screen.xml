@@ -98,7 +98,7 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
-            android:id="@+id/word"
+            android:id="@+id/prev_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/prev_word"
@@ -165,10 +165,11 @@
     <LinearLayout
         android:id="@+id/score_one_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_text_size"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:gravity="center" >
+        android:gravity="center"
+        android:visibility="gone">
         
         <TextView
             android:layout_width="wrap_content"
@@ -189,11 +190,12 @@
 
     <LinearLayout
         android:id="@+id/score_two_layout"
-        android:layout_width="@dimen/default_text_size"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone" >
 
         <TextView
             android:id="@+id/score_two_label"
