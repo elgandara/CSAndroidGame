@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 public class Dictionary {
     public final static int MIN_LENGTH=1;
-    private ArrayList<String> taken;
+    private DAFSA taken;
     private ArrayList<String> words;
 
     public Dictionary(InputStream wordStream) throws IOException{
         BufferedReader in = new BufferedReader(new InputStreamReader(wordStream));
         words = new ArrayList<>();
-        taken = new ArrayList<>();
+        taken = new DAFSA();
 
         String line = null;
         while((line = in.readLine())!=null)
@@ -53,7 +53,7 @@ public class Dictionary {
 
     public boolean removeWord(String word)
     {
-        taken.add(word);
+        taken.insert(word);
         return words.remove(word);
 
     }
@@ -63,9 +63,9 @@ public class Dictionary {
     }
     public boolean reset()
     {
-        taken.clear();
+        taken= new DAFSA();
         return true;
-        //taken = new DAFSA();
+
     }
 
 }
