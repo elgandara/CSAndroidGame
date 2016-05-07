@@ -160,6 +160,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
 
     public void action()
     {
+        Log.d("action", "NEXT ACTION");
         //get the word from input
         String input = input_text.getText().toString();
         input_text.setText("");
@@ -168,16 +169,6 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         //assume the word is already used or not a word
 
         String prefix = fragment.getText().toString();
-
-        /*
-        //dont let the user submit word when
-        //not his turn and playing with computer
-        Log.d("booleans", "___________________________");
-        Log.d("booleans", "isUserTurn: " + isUserTurn);
-        Log.d("booleans", "computerOn: " + computerOn);
-        Log.d("booleans", "isGameRunning: " + isGameRunning);
-        */
-        Log.d("booleans", "isGameOver: " + isGameOver);
         if(!isUserTurn && computerOn)
         {
             input = dictionary.getPossibleWord(prefix);
@@ -208,7 +199,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
         lastWord.setTextColor(color);
 
         //change player
-        turnTimer.cancel();
+        //turnTimer.onFinish();
         startTurnTimer();
     }
     public void startOverallTimer() {
@@ -259,6 +250,7 @@ public class GameScreenActivity extends AppCompatActivity implements OnClickList
                 if (isUserTurn) {
                     if(computerOn)
                     {
+                        Log.d("turnTimer", "Timer Finish");
                         action();
                     }
                     isUserTurn = false;
